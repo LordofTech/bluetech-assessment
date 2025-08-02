@@ -61,6 +61,7 @@ The modal should contain three steps, each as a separate tab:
    cd quixess-frontend-test
    npm install
    npm run dev
+<<<<<<< HEAD
  ### Submit your fork repository to us on Indeed via your email
 
 
@@ -110,3 +111,6 @@ A modern, responsive onboarding modal built with React and Tailwind CSS.
 -  Component-based architecture
 
 ##  Project Structure
+=======
+ ### Submit your fork repository to us on Indeed via your email
+>>>>>>> a64041b3af72ab08c3c76468373952d5bf811d69
