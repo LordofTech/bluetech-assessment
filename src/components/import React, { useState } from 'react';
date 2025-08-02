@@ -1,0 +1,170 @@
+import React, { useState } from 'react';
+import { CheckCircle, ArrowRight, ArrowLeft, X } from 'lucide-react';
+import Step1 from './Step1';
+import Step2 from './Step2';
+import Step3 from './Step3';
+
+const OnboardingModal = () => {
+  // State to track which step we're currently on (1, 2, or 3)
+  const [currentStep, setCurrentStep] = useState(1);
+  
+  // State to control if the modal is open or closed
+  const [isOpen, setIsOpen] = useState(false);
+  
+  // State to store all form data from all steps
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    company: '',
+    role: '',
+    newsletter: false
+  });
+
+  // Function to update form data - takes a field name and new value
+  const updateFormData = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  // Function to go to the next step
+  const handleNext = () => {
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  // Function to go back to the previous step
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  // Function to handle form submission (final step)
+  const handleSubmit = () => {
+    // Here you would typically send data to your backend
+    console.log('Form submitted with data:', formData);
+    alert('Onboarding completed successfully!');
+    setIsOpen(false);
+    setCurrentStep(1); // Reset to first step for next time
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsOpen(false);
+    setCurrentStep(1); // Reset to first step when closing
+  };
+
+  // Function to render the current step component
+  const renderCurrentStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <Step1 formData={formData} updateFormData={updateFormData} />;
+      case 2:
+        return <Step2 formData={formData} updateFormData={updateFormData} />;
+      case 3:
+        return <Step3 formData={formData} updateFormData={updateFormData} />;
+      default:
+        return <Step1 formData={formData} updateFormData={updateFormData} />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      {/* Button to open the modal */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200"
+      >
+        Start Onboarding
+      </button>
+
+      {/* Modal Overlay - only shows when isOpen is true */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          {/* Modal Container */}
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto modal-content">
+            {/* Modal Header with close button and progress indicators */}
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex justify-between items-center mb-4">
+                <h1 className="text-lg font-semibold text-gray-900">Get Started</h1>
+                <button
+                  onClick={closeModal}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              
+              {/* Progress Indicators - shows which step is active */}
+              <div className="flex space-x-2">
+                {[1, 2, 3].map((step) => (
+                  <div
+                    key={step}
+                    className={`flex-1 h-2 rounded-full ${
+                      step <= currentStep ? 'bg-blue-500' : 'bg-gray-200'
+                    }`}
+                  />
+                ))}
+              </div>
+              
+              {/* Step counter */}
+              <p className="text-sm text-gray-500 mt-2">
+                Step {currentStep} of 3
+              </p>
+            </div>
+
+            {/* Modal Body - renders the current step */}
+            <div className="p-6">
+              {renderCurrentStep()}
+            </div>
+
+            {/* Modal Footer with navigation buttons */}
+            <div className="p-6 border-t border-gray-200">
+              <div className="flex justify-between">
+                {/* Back Button - only show if not on first step */}
+                <button
+                  onClick={handleBack}
+                  disabled={currentStep === 1}
+                  className={`flex items-center px-4 py-2 rounded-md font-medium transition-colors ${
+                    currentStep === 1
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back
+                </button>
+
+                {/* Next/Submit Button */}
+                {currentStep < 3 ? (
+                  <button
+                    onClick={handleNext}
+                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors"
+                  >
+                    Next
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubmit}
+                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md font-medium hover:bg-green-700 transition-colors"
+                  >
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Complete Setup
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default OnboardingModal;
